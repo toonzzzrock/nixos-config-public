@@ -1,0 +1,82 @@
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrains Mono";
+  font-size: 12px;
+  min-height: 0;
+  color: #c0c0c0;
+}
+
+window#waybar {
+  background: transparent;
+  margin: 0;
+  padding: 0 5px;
+}
+
+/* Left modules styling */
+#tray,
+#clock,
+#cava\.left {
+  background: #2a2a2a;
+  margin: 4px 4px;
+  padding: 0 8px;
+  color: #c0c0c0;
+  border-radius: 20px; /* More round */
+}
+
+/* Center modules styling */
+#workspaces,
+#custom-playerlabel {
+  background: #2a2a2a;
+  margin: 4px 4px;
+  padding: 0 8px;
+  border-radius: 20px; /* More round */
+}
+
+/* Right modules styling */
+#custom-power-profiles,
+#pulseaudio,
+#battery {
+  background: #2a2a2a;
+  margin: 4px 4px;
+  padding: 0 8px;
+  border-radius: 20px; /* More round */
+}
+
+/* Uniform color for all modules */
+#tray,
+#clock,
+#cava\.left,
+#custom-playerlabel,
+#custom-power-profiles,
+#pulseaudio,
+#battery {
+  color: #c0c0c0;
+}
+
+#cava\.left {
+  padding: 0 2px;
+}
+
+#workspaces button {
+  padding: 0 2px;
+  margin: 2px 1px;
+  border-radius: 12px; /* More round */
+  color: transparent;
+  background: #2a2a2a;
+  min-width: 18px;
+  transition: all 0.2s ease-in-out;
+}
+
+#workspaces button.active {
+  background-color: #4a4a4a;
+  color: #c0c0c0;
+  min-width: 25px;
+  border-radius: 16px; /* More round */
+}
+
+#workspaces button:hover {
+  background-color: #5a5a5a;
+  color: #c0c0c0;
+  border-radius: 16px; /* More round */
+}
