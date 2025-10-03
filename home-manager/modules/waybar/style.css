@@ -1,0 +1,144 @@
+* {
+  border: none;
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 12px;
+  min-height: 0;
+  color: #ffd0d0;
+  opacity: 0.92;
+  border-radius: 8px;
+}
+
+window#waybar {
+  background: transparent;
+  margin: 0;
+  /* Remove all margins */
+  padding: 0;
+  /* Remove all padding */
+}
+
+/* Left modules styling */
+#cava\.left {
+  background: #2a2a2a;
+  margin: 0 4px;
+  /* Remove top and bottom margin */
+  padding: 0 4px;
+  /* Remove top and bottom padding */
+  border: 1px solid #2a2a2a;
+
+}
+
+/* Center modules styling */
+#workspaces {
+  background: #2a2a2a;
+  margin: 0 4px;
+  /* Remove top and bottom margin */
+  padding: 0 8px;
+  /* Remove top and bottom padding */
+}
+
+/* Right modules styling */
+#custom-power-profiles {
+  background-color: rgba(71, 58, 58, 0.5);
+  /* left-most: round left corners only */
+  margin: 0 0 0 4px;
+  padding: 0 8px;
+  border: 1px solid #ffd0d0;
+  border-radius: 8px 0 0 8px;
+}
+
+#custom-fan-speed {
+  background-color: rgba(71, 58, 58, 0.5);
+  /* middle: no rounding */
+  margin: 0;
+  padding: 0 8px;
+  border-top: 1px solid #ffd0d0;
+  border-bottom: 1px solid #ffd0d0;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+}
+
+#battery {
+  background-color: rgba(71, 58, 58, 0.5);
+  /* right-most: round right corners only and margin only right side */
+  margin: 0 4px 0 0;
+  padding: 0 8px;
+  border: 1px solid #ffd0d0;
+  border-radius: 0 8px 8px 0;
+}
+
+#pulseaudio {
+  background: #ffd0d0;
+  color: #2a2a2a;
+  margin: 0 4px;
+  /* Remove top and bottom margin */
+  padding: 0 8px;
+  /* Remove top and bottom padding */
+}
+
+#clock {
+  color: #ffd0d0;
+  background: #2a2a2a;
+  margin: 0 4px;
+  /* Remove top and bottom margin */
+  padding: 0 8px;
+  /* Remove top and bottom padding */
+}
+
+/* Force all app icons to be the same color */
+#tray {
+  padding: 0 4px;
+  margin: 0 10px 0 8px;
+  color: #ffd0d0;
+  background: #2a2a2a;
+}
+
+#tray * {
+  color: #ffd0d0;
+  background: #2a2a2a;
+}
+
+
+#workspaces button {
+  padding: 0 2px;
+  margin: 0 1px;
+  /* Remove top and bottom margin */
+  border-radius: 12px;
+  color: transparent;
+  background: #2a2a2a;
+  min-width: 18px;
+}
+
+#workspaces button.active {
+  background: #ffd0d0;
+  color: #ffd0d0;
+  min-width: 30px;
+  border-radius: 16px;
+}
+
+#workspaces button:hover {
+  background: #d66767;
+  color: #d66767;
+  min-width: 30px;
+  border-radius: 17px;
+}
+
+/* Life archive toggle states */
+#custom-life-archive-toggle {
+  /* margin on left 8px and on right 4px  */
+  margin: 0 0px 0 4px;
+  padding: 0 8px;
+  border-radius: 16px;
+}
+
+#custom-life-archive-toggle.on {
+  font-size: 16px;
+  color: #ffd0d0;
+  background: #2a2a2a;
+}
+
+#custom-life-archive-toggle.off {
+  font-size: 16px;
+  color: #2a2a2a;
+  background: #2a2a2a;
+}

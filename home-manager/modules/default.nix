@@ -1,0 +1,19 @@
+{
+  imports = [
+    ./hyprland
+    ./rofi
+    ./scripts
+    ./waybar
+    ./wlogout
+    ./zsh
+    ./yazi
+    ./fastfetch
+    ./cava.nix
+    ./vscode.nix
+    ./git.nix
+    ./kitty.nix
+    ./tmux.nix
+    ./zoxide.nix
+    ./zathura.nix
+  ];
+}

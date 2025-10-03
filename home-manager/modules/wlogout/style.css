@@ -1,0 +1,67 @@
+* {
+    background-image: none;
+    font-size: 20px;
+}
+
+window {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.9)), url("/etc/nixos/wallpapers/4.png");
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.92;
+}
+
+button {
+    color: transparent;
+    /* red text color */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* transparent button background */
+    outline-style: none;
+    border: none;
+    border-width: 0px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30%;
+    /* Increased size when not hovered */
+    border-radius: 15px;
+    box-shadow: none;
+    text-shadow: none;
+    animation: gradient_f 20s ease-in infinite;
+}
+
+button:focus {
+    background-color: rgba(0, 0, 0, 0.5);
+    /* slightly darker transparent background */
+    background-size: 35%;
+}
+
+button:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    /* slightly darker transparent background */
+    background-size: 40%;
+    border-radius: 15px;
+    animation: gradient_f 20s ease-in infinite;
+    transition: all 0.3s cubic-bezier(.55, 0.0, .28, 1.682);
+}
+
+#shutdown {
+    background-image: url("/etc/nixos/home-manager/modules/wlogout/shutdown_white.png");
+    border-radius: 10px;
+    margin: 10px 20px;
+    /* Larger left and right margins */
+}
+
+#reboot {
+    background-image: url("/etc/nixos/home-manager/modules/wlogout/reboot_white.png");
+    border-radius: 10px;
+    margin: 10px 20px;
+    /* Larger left and right margins */
+}
+
+#hibernate {
+    background-image: url("/etc/nixos/home-manager/modules/wlogout/hibernate_white.png");
+    border-radius: 10px;
+    margin: 10px 20px;
+    /* Larger left and right margins */
+}
