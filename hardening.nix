@@ -2,9 +2,6 @@
   config,
   pkgs,
   lib,
-  system,
-  inputs,
-  user,
   ...
 }:
 let
@@ -83,18 +80,18 @@ in
         "AF_UNIX"
       ];
     };
-    nbfc_service.serviceConfig = {
-      ProtectControlGroups = true; # restrict cgroups access【759222533746914†L156-L159】
-      RestrictNamespaces = true; # limit unprivileged namespace creation【759222533746914†L157-L159】
-      MemoryDenyWriteExecute = true; # disallow W+X memory mappings【759222533746914†L160-L162】
-      RestrictSUIDSGID = true; # drop SUID/SGID binaries【759222533746914†L160-L162】
+    # nbfc_service.serviceConfig = {
+    #   ProtectControlGroups = true; # restrict cgroups access【759222533746914†L156-L159】
+    #   RestrictNamespaces = true; # limit unprivileged namespace creation【759222533746914†L157-L159】
+    #   MemoryDenyWriteExecute = true; # disallow W+X memory mappings【759222533746914†L160-L162】
+    #   RestrictSUIDSGID = true; # drop SUID/SGID binaries【759222533746914†L160-L162】
 
-      ProtectClock = true; # disallow changing system clock【759222533746914†L149-L151】
-      ProtectKernelLogs = true; # restrict access to kernel log messages【759222533746914†L149-L153】
-      LockPersonality = true; # prevent changing process personality【759222533746914†L158-L160】
-      PrivateDevices = true; # hide /dev; service gets a minimal device node set
-      PrivateTmp = true; # hide /dev; service gets a minimal device node set
-    };
+    #   ProtectClock = true; # disallow changing system clock【759222533746914†L149-L151】
+    #   ProtectKernelLogs = true; # restrict access to kernel log messages【759222533746914†L149-L153】
+    #   LockPersonality = true; # prevent changing process personality【759222533746914†L158-L160】
+    #   PrivateDevices = true; # hide /dev; service gets a minimal device node set
+    #   PrivateTmp = true; # hide /dev; service gets a minimal device node set
+    # };
 
     nscd.serviceConfig = {
       ProtectKernelTunables = lib.mkDefault true; # restrict modification of kernel parameters【759222533746914†L149-L153】

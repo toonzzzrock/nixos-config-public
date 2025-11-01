@@ -24,7 +24,7 @@
     ./hypr.nix
     ./power.nix
     ./shell.nix
-    ./nvim.nix
+    # ./nvim.nix
     ./life_archive.nix
     # ./rclone.nix
     ./steam.nix
@@ -39,9 +39,9 @@
 
   qt = {
     enable = true;
-    platformTheme = "gnome";
     style = "adwaita-dark";
   };
+
   services.das_watchdog.enable = false;
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = false; # powers up the default Bluetooth controller on boot
@@ -54,7 +54,6 @@
   services.avahi.enable = false;
   services.flatpak.enable = false;
 
-  system.switch.enable = true;
   services.httpd.enablePerl = false;
 
   environment = {
@@ -93,15 +92,17 @@
 
       GDK_BACKEND = "wayland, x11";
       CLUTTER_BACKEND = "wayland";
-      QT_QPA_PLATFORM = "wayland;xcb";
+      QT_QPA_PLATFORM = "wayland";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
       QT_AUTO_SCREEN_SCALE_FACTOR = 1;
       SDL_VIDEODRIVER = "wayland";
+      DISPLAY = ":0";
 
       EGL_PLATFORM = "wayland";
       GSK_RENDERER = "gl";
       EDITOR = "code";
       SUDO_EDITOR = "nvim";
+      MAMBA_ROOT_PREFIX = "/home/toonzzzrock/.conda/envs";
     };
   };
 
@@ -111,7 +112,9 @@
     command-not-found.enable = lib.mkForce false;
     fish.generateCompletions = lib.mkForce false;
     nano.enable = false;
+    zoom-us.enable = true;
   };
+  services.upower.enable = true;
   services.hardware.bolt.enable = false;
 
   services.geoclue2.enable = false;
@@ -190,12 +193,13 @@
     vial
     qmk-udev-rules # the only relevant
   ];
+  # programs.zoom-us.enable = true;
 
-  services.preload.enable = true;
   services.mysql = {
     enable = true;
     package = pkgs.mariadb;
   };
+  systemd.services.mysql.wantedBy = lib.mkForce [ ];
 
   services.journald.extraConfig = "Storage=none";
 

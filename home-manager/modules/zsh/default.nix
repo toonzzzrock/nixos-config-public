@@ -39,7 +39,7 @@
       rm = "rm -I";
       nix-re = "cd /etc/nixos && sudo nixos-rebuild switch --flake .#toonzzzrock";
       nix-up = "cd /etc/nixos && sudo nix flake update";
-      conda-install = "micromamba install --yes -f conda-requirements.txt -c conda-forge";
+      mamba-env = "mamba env create -f environment.yml";
       cdn = "cd /etc/nixos";
       nix-clean = ''
         sudo rm -rf /tmp/* &&
@@ -50,6 +50,9 @@
                   sudo nix-store --optimize &&
                   nix-store --optimize'';
 
+      sql-start = "sudo systemctl start mysql & sudo mysql -u root -p";
+      sql-stop = "sudo systemctl stop mysql";
+      sql-restart = "sudo systemctl restart mysql";
       du = "ncdu";
       gi = "nvidia-offload gimp";
       tv-zsh = "television zsh-history";
@@ -87,14 +90,14 @@
       source /etc/nixos/home-manager/modules/scripts/yazi.sh
 
       # Start Tmux automatically if not already running. No Tmux in TTY
-      if [ -z "$TMUX" ] && [ -n "$DISPLAY" ]; then
+      if [[ -z "$TMUX" ]]; then
         tmux attach-session -t default || tmux new-session -s default
       fi
       fastfetch
 
       zvm_after_init_commands+=(eval "$(fzf --zsh)")
       eval "$(zoxide init zsh)"
-      eval "$(micromamba shell hook --shell zsh)"
+      eval "$(mamba shell hook --shell zsh)"
       eval "$(pay-respects zsh --alias)"
 
       # Enable Ctrl+Left/Right word movement in terminal

@@ -1,9 +1,15 @@
-{ config, pkgs, lib, system, inputs, user, ... }:
+{ pkgs, ... }:
 
 {
   systemd.user.services.life_archive = {
     description = "Life Archive Service";
-    path = [ pkgs.grim pkgs.bash pkgs.hyprland pkgs.jq pkgs.dbus ];
+    path = [
+      pkgs.grim
+      pkgs.bash
+      pkgs.hyprland
+      pkgs.jq
+      pkgs.dbus
+    ];
     wantedBy = [ "default.target" ];
     enable = true;
     serviceConfig = {
@@ -25,4 +31,3 @@
     };
   };
 }
-

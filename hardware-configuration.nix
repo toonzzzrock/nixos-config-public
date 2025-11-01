@@ -10,7 +10,6 @@
 }:
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
-
   systemd.services."sys-fs-pstore.mount".enable = false;
   systemd.services."systemd-pstore".enable = false;
   systemd.services."modprobe@efi_pstore".enable = false;
@@ -21,26 +20,12 @@
     consoleLogLevel = 3;
     enableContainers = lib.mkForce false;
     tmp = {
-      # useTmpfs = true;
       useZram = true;
     };
-    # plymouth = {
-    #   enable = true;
-
-    #   # add theme package and name
-    #   themePackages = lib.mkForce [pkgs.mikuboot];
-    #   theme = lib.mkForce "mikuboot";
-    # };
 
     kernelModules = [
-      #   "kvm-intel"
       "i915"
-      # "nvidia"
-      # "nvidia_modeset"
-      # "nvidia_uvm"
-      # "nvidia_drm"
     ];
-    # kernelModules = [ ];
 
     initrd = {
       availableKernelModules = [
@@ -62,6 +47,7 @@
       timeout = 0;
     };
     kernelPackages = pkgs.linuxPackages_cachyos-lto; # .cachyOverride { mArch = "GENERIC_V4"; };
+    # kernelPackages = pkgs.linuxPackages;
 
     kernelParams = [
       # "quiet"
@@ -235,16 +221,12 @@
         };
       }
     ];
-
-    # modprobeConfig.enable = true;
-    # modprobeConfig.useUbuntuModuleBlacklist = true;
-
   };
 
   services.scx = {
     enable = true;
-    package = pkgs.scx_git.rustscheds;
-    scheduler = "scx_cosmos";
+    package = pkgs.scx.rustscheds;
+    scheduler = "scx_bpfland";
   };
   boot.initrd.systemd.settings.Manager = {
     DefaultTimeoutStopSec = "5s";
@@ -303,15 +285,11 @@
   # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
 
   # nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  nix.settings.system-features = [
-    "big-parallel"
-    "gccarch-x86-64-v4"
-  ];
-  nixpkgs.hostPlatform = {
-    # gcc.arch = "tigerlake";
-    # gcc.tune = "tigerlake";
-    system = "x86_64-linux";
-  };
+  # nix.settings.system-features = [
+  #   "big-parallel"
+  #   "gccarch-x86-64-v4"
+  # ];
+  nixpkgs.hostPlatform.system = "x86_64-linux";
   hardware.enableAllFirmware = lib.mkDefault true;
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

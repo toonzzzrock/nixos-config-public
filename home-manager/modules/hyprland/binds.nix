@@ -9,6 +9,7 @@
       "$modifier SHIFT,W, exec, nvidia-offload brave"
       "$modifier,C,exec, nvidia-offload code"
       "$modifier,O,exec, nvidia-offload obsidian"
+      "$modifier,Z,exec, zoom-us"
       "$modifier SHIFT,C,exec,kitty -e nvim"
       "$modifier, B,exec,kitty -e bluetuith"
       "$modifier,D,exec, vesktop --enable-features=WebRTCPipeWireCapturer, WebRtcPipeWireCamera"

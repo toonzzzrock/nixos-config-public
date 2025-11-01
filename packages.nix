@@ -1,6 +1,8 @@
 { pkgs, ... }:
 with pkgs;
 [
+  zoom-us
+  godot
   brightnessctl
   gimp
   nix-search-cli
@@ -18,7 +20,7 @@ with pkgs;
   youtube-music
   nixfmt
 
-  protonup
+  protonup-ng
   # hyprpaper
   nbfc-linux
 
@@ -71,7 +73,7 @@ with pkgs;
   nodejs
   fastfetch
   cava
-  neovim
+  # neovim
   ripgrep
   fzf
   zsh-powerlevel10k # ZSH Theme

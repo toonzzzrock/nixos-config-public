@@ -2,9 +2,6 @@
   config,
   pkgs,
   lib,
-  system,
-  inputs,
-  user,
   ...
 }:
 
@@ -39,30 +36,6 @@
     ./home-manager/modules
     ./home-manager/home-packages.nix
   ];
-
-  qt = {
-    enable = true;
-    platformTheme.name = "adwaita";
-    style = {
-      package = pkgs.gnome-themes-extra;
-      name = "adwaita-dark";
-    };
-  };
-
-  dconf.settings = {
-
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
-    };
-  };
-
-  gtk = {
-    enable = true;
-    theme = {
-      name = "Adwaita-dark";
-      package = pkgs.gnome-themes-extra;
-    };
-  };
 
   # https://github.com/nix-community/home-manager/blob/master/modules/services/redshift-gammastep/lib/options.nix
   services.gammastep = {

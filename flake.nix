@@ -46,22 +46,31 @@
   };
   outputs =
     { self, ... }@inputs:
-    let
-      system = "x86_64-linux";
-    in
     {
+      packages.x86_64-linux.my-neovim =
+        (inputs.nvf.lib.neovimConfiguration {
+          pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+          modules = [
+            ./nvim.nix
+          ];
+        }).neovim;
+
       nixosConfigurations.toonzzzrock = inputs.nixpkgs.lib.nixosSystem {
-        inherit system;
         specialArgs = {
-          inherit inputs system; # include system here
+          inherit inputs; # include system here
         }; # Pass the flake inputs to NixOS modules
         modules = [
           ./configuration.nix
           inputs.home-manager.nixosModules.home-manager
           inputs.chaotic.nixosModules.default # IMPORTANT
           # inputs.mikuboot.nixosModules.default
-          inputs.nvf.nixosModules.default
           # https://github.com/oxalica/rust-overlay
+          (
+            { pkgs, ... }:
+            {
+              environment.systemPackages = [ self.packages.${pkgs.stdenv.hostPlatform.system}.my-neovim ];
+            }
+          )
           (
             { pkgs, ... }:
             {
@@ -77,7 +86,7 @@
                 rustfmt
                 cmake
                 clippy
-                inputs.nil.packages.${system}.nil
+                inputs.nil.packages.${pkgs.stdenv.hostPlatform.system}.nil
               ];
             }
           )
@@ -92,7 +101,6 @@
               };
               extraSpecialArgs = {
                 inherit inputs; # Pass the flake's top-level 'inputs' directly
-                inherit system; # Pass system directly
               };
             };
           }

@@ -3,8 +3,17 @@
   # basic Git setup
   programs.git = {
     enable = true;
-    userName = "toonzzzrock";
-    userEmail = "toonzzzrock@gmail.com";
+    settings = {
+      user = {
+        name = "toonzzzrock";
+        email = "toonzzzrock@gmail.com";
+      };
+      init.defaultBranch = "main";
+    };
+  };
+
+  programs.lazygit = {
+    enable = true;
   };
 
   programs.gh = {

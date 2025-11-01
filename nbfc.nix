@@ -1,10 +1,15 @@
 # nbfc.nix
-{ config, inputs, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 let
   myUser = "toonzzzrock"; # adjust this to your username
-  command =
-    "bin/nbfc_service --config-file '/home/${myUser}/.config/nbfc.json'";
-in {
+  command = "bin/nbfc_service --config-file '/home/${myUser}/.config/nbfc.json'";
+in
+{
   systemd.services.nbfc_service = {
     enable = true;
     description = "NoteBook FanControl service";
@@ -122,7 +127,7 @@ in {
   #  "UpThreshold": 78,
   #  "DownThreshold": 69,
   #  "FanSpeed": 80.0
-  #  },
+  #  },z
   #  {
   #  "UpThreshold": 80,
   #  "DownThreshold": 75,

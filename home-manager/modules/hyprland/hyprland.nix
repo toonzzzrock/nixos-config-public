@@ -1,9 +1,7 @@
 {
-  config,
   inputs,
   pkgs,
   lib,
-  system,
   ...
 }:
 {
@@ -17,7 +15,9 @@
     enable = true;
     settings = {
       global = {
-        browser = "${inputs.zen-browser.packages.${system}.default}/bin/zen -new-tab";
+        browser = "${
+          inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+        }/bin/zen -new-tab";
         dmenu = "${pkgs.rofi}/bin/rofi -dmenu";
         follow = "mouse";
         frame_color = lib.mkForce "#000000a5";
@@ -100,12 +100,10 @@
       enableXdgAutostart = true;
       variables = [ "--all" ];
     };
-    xwayland = {
-      enable = false;
-    };
+
     plugins = [
-      inputs.hyprland-plugins.packages.${system}.hyprfocus
-      inputs.split-monitor-workspaces.packages.${system}.split-monitor-workspaces
+      inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
+      inputs.split-monitor-workspaces.packages.${pkgs.stdenv.hostPlatform.system}.split-monitor-workspaces
     ];
     settings = {
       exec-once = [
@@ -117,9 +115,6 @@
 
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "systemctl --user start hyprpolkitagent"
-        # "exec systemctl --user import-environment PATH && systemctl --user restart xdg-desktop-portal.service"
-        # "hypr-start"
-        # kill and restart hyprpaper
         "killall -q hyprpaper;sleep .5 && hyprpaper"
         "nvidia-offload waybar"
         "pypr"
@@ -127,10 +122,6 @@
         "sudo rm -rf /home/toonzzzrock/.cache/cliphist"
         "[workspace 1 silent] nvidia-offload zen"
         "[workspace 2 silent] nvidia-offload code"
-        # "sudo tlp bat"
-        # "[workspace 3 silent] sleep 5 && obsidian"
-        # "kitten panel --edge=background -o background_opacity=0.2 -o background=black btop"
-        # "sleep 60 && wallsetter"
       ];
 
       input = {
@@ -192,10 +183,14 @@
         # Screen black momentarily or going black when app is fullscreen
         # Try setting vrr to 0z
       };
+      xwayland = {
+        enabled = true;
+      };
 
       render = {
         cm_enabled = true;
         direct_scanout = 1;
+        new_render_scheduling = false;
       };
 
       dwindle = {
@@ -244,6 +239,11 @@
       experimental = {
         xx_color_management_v4 = true;
       };
+
+      ecosystem = {
+        no_update_news = true;
+        no_donation_nag = true;
+      };
     };
 
     extraConfig = ''
@@ -255,14 +255,17 @@
           animate_floating = yes
           animate_workspacechange = yes
           focus_animation = flash
-          bezier = realsmooth, 0.28,0.29,.69,1.08
+          bezier = bezIn, 0.5,0.0,1.0,0.5
+          bezier = bezOut, 0.0,0.5,0.5,1.0
 
           flash {
-            flash_opacity = 0.7
-            in_bezier = realsmooth
-            in_speed = 0.5
-            out_bezier = realsmooth
-            out_speed = 2
+              flash_opacity = 0.7
+
+              in_bezier = bezIn
+              in_speed = 0.5
+
+              out_bezier = bezOut
+              out_speed = 3
           }
         }
 

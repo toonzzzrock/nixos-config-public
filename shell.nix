@@ -15,18 +15,7 @@
         with super;
         [
           zlib
-          zstd
           stdenv.cc.cc
-          curl
-          openssl
-          attr
-          libssh
-          bzip2
-          libxml2
-          acl
-          libsodium
-          util-linux
-          xz
         ]
       );
       # here we are overriding python program to add LD_LIBRARY_PATH to it's env
@@ -54,6 +43,6 @@
   environment.systemPackages = with pkgs; [
     python
     uv
-    micromamba
+    mamba-cpp
   ];
 }
