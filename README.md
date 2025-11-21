@@ -1,6 +1,7 @@
 # nixos-config-public
 
 My curent NixOS configuration
+
 - Cachyos-lto Kernel via Chaotic Team
 - Custom `kernelParams`, `kernel.sysctl`
 - HomeManager and Flakes
@@ -11,3 +12,5 @@ My curent NixOS configuration
 - Permission Hardening
 - Unstable Branch
 - ZramSwap, Btrfs file system
+
+![system fastfetch](image.png)

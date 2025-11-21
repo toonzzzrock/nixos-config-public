@@ -1,48 +1,25 @@
 {
   pkgs,
-  lib,
-  config,
-  pkgsTopLevel,
   ...
 }:
 {
-
-  nixpkgs.overlays = [
-    (self: super: rec {
-      # https://github.com/NixOS/nixpkgs/blob/c339c066b893e5683830ba870b1ccd3bbea88ece/nixos/modules/programs/nix-ld.nix#L44
-      # > We currently take all libraries from systemd and nix as the default.
-      pythonldlibpath = lib.makeLibraryPath (
-        with super;
-        [
-          zlib
-          stdenv.cc.cc
-        ]
-      );
-      # here we are overriding python program to add LD_LIBRARY_PATH to it's env
-      python = super.stdenv.mkDerivation {
-        name = "python";
-        buildInputs = [ super.makeWrapper ];
-        src = super.python312;
-        installPhase = ''
-          mkdir -p $out/bin
-          cp -r $src/* $out/
-          wrapProgram $out/bin/python3 --set LD_LIBRARY_PATH ${pythonldlibpath}
-          wrapProgram $out/bin/python3.12 --set LD_LIBRARY_PATH ${pythonldlibpath}
-        '';
-      };
-      python3Packages = super.python3Packages.overrideScope (
-        final: prev: {
-          enableOptimizations = true;
-          reproducibleBuild = false;
-        }
-      );
-    })
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc.lib
+    glibc
   ];
 
   environment.localBinInPath = true;
   environment.systemPackages = with pkgs; [
-    python
-    uv
+    (python313.withPackages (
+      ps: with ps; [
+        ipykernel # kernel for .ipynb / Jupyter / VS Code
+        tqdm
+        matplotlib
+        numpy
+        pandas
+      ]
+    ))
     mamba-cpp
   ];
 }

@@ -1,6 +1,9 @@
 { pkgs, ... }:
 with pkgs;
 [
+  lazydocker
+
+  dbeaver-bin
   zoom-us
   godot
   brightnessctl
@@ -10,7 +13,6 @@ with pkgs;
   brave
   dig
   xfce.thunar
-  direnv
 
   llvmPackages_21.llvm # core LLVM tools like opt, llc
   llvmPackages_21.clang # C/C++/Objective‑C compiler front end

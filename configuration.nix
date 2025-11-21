@@ -102,7 +102,7 @@
       GSK_RENDERER = "gl";
       EDITOR = "code";
       SUDO_EDITOR = "nvim";
-      MAMBA_ROOT_PREFIX = "/home/toonzzzrock/.conda/envs";
+      MAMBA_ROOT_PREFIX = "/home/toonzzzrock/.mamba/";
     };
   };
 
@@ -116,6 +116,15 @@
   };
   services.upower.enable = true;
   services.hardware.bolt.enable = false;
+
+  # Docker
+  virtualisation = {
+    docker.enable = true;
+  };
+  systemd.services.docker.wantedBy = lib.mkForce [ ];
+  systemd.services.container.wantedBy = lib.mkForce [ ];
+
+  hardware.nvidia-container-toolkit.enable = true;
 
   services.geoclue2.enable = false;
   services.xserver.desktopManager.xterm.enable = false;
@@ -153,6 +162,7 @@
       "dialout"
       "input"
       "storage"
+      "docker"
     ];
     shell = pkgs.zsh;
   };
