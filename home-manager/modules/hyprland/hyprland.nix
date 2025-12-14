@@ -73,12 +73,10 @@
     enable = true;
     package = inputs.hyprpaper.packages.${pkgs.stdenv.hostPlatform.system}.default;
     settings = {
-      ipc = "off";
-      splash = false;
-      preload = [
-        "/etc/nixos/wallpapers/yottea.png"
-      ];
-      wallpaper = lib.mkForce ", /etc/nixos/wallpapers/yottea.png";
+      wallpaper = {
+        path = "/etc/nixos/wallpapers/yottea.png";
+        fit_mode = "cover";
+      };
     };
   };
   systemd.user.targets.hyprland-session.Unit.Wants = [ "xdg-desktop-autostart.target" ];
@@ -95,7 +93,6 @@
     };
 
     plugins = [
-      inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}.hyprfocus
       inputs.split-monitor-workspaces.packages.${pkgs.stdenv.hostPlatform.system}.split-monitor-workspaces
     ];
     settings = {
@@ -243,23 +240,6 @@
       source = ~/.config/hypr/monitors.conf
 
       plugin {
-        hyprfocus {
-          enabled = yes
-          animate_floating = no
-          animate_workspacechange = no
-          focus_animation = shrink
-          bezier = bezIn, 0.5,0.0,1.0,0.5
-          bezier = bezOut, 0.0,0.5,0.5,1.0
-
-          shrink {
-            shrink_percentage = 0.99
-            in_bezier = bezIn
-            in_speed = 1.5
-            out_bezier = bezOut
-            out_speed = 3
-          }
-        }
-
         split-monitor-workspaces {
           count = 4
           keep_focused = 0
