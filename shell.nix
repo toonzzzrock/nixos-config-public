@@ -21,5 +21,13 @@
       ]
     ))
     mamba-cpp
+
+    nodePackages_latest.pnpm
+    nodePackages_latest.vercel
+    nodePackages_latest.prisma
+    openssl
+    nodejs
+    prisma-engines
+    sqlite
   ];
 }

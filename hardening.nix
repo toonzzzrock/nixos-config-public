@@ -6,11 +6,11 @@
 }:
 let
   commonHardening = {
-    ProtectHome = true; # mount /home, /root, /run/user readonly【759222533746914†L154-L156】
+    ProtectHome = false; # mount /home, /root, /run/user readonly【759222533746914†L154-L156】
     ProtectSystem = "full"; # make /boot, /etc and /usr readonly【759222533746914†L154-L156】
     ProtectClock = true; # disallow changing system clock【759222533746914†L149-L151】
-    ProtectKernelTunables = true; # restrict modification of kernel parameters【759222533746914†L149-L153】
-    ProtectKernelModules = true; # prevent loading kernel modules【759222533746914†L149-L153】
+    ProtectKernelTunables = false; # restrict modification of kernel parameters【759222533746914†L149-L153】
+    ProtectKernelModules = false; # prevent loading kernel modules【759222533746914†L149-L153】
     ProtectKernelLogs = true; # restrict access to kernel log messages【759222533746914†L149-L153】
     ProtectControlGroups = true; # restrict cgroups access【759222533746914†L156-L159】
     RestrictNamespaces = true; # limit unprivileged namespace creation【759222533746914†L157-L159】
@@ -194,39 +194,9 @@ in
 
         su.requireWheel = lib.mkDefault true;
         su-l.requireWheel = lib.mkDefault true;
-        system-login.failDelay.delay = lib.mkDefault "4000000";
       };
     };
   };
-
-  services.journald = {
-    storage = "volatile"; # Store logs in memory
-    upload.enable = false; # Disable remote log upload (the default)
-  };
-
-  # Disable ftrace debugging
-  boot.kernel.sysctl."kernel.ftrace_enabled" = lib.mkDefault false;
-
-  # Enable strict reverse path filtering (that is, do not attempt to route
-  # packets that "obviously" do not belong to the iface's network; dropped
-  # packets are logged as martians).
-  boot.kernel.sysctl."net.ipv4.conf.all.log_martians" = lib.mkDefault true;
-  boot.kernel.sysctl."net.ipv4.conf.all.rp_filter" = lib.mkDefault "1";
-  boot.kernel.sysctl."net.ipv4.conf.default.log_martians" = lib.mkDefault true;
-  boot.kernel.sysctl."net.ipv4.conf.default.rp_filter" = lib.mkDefault "1";
-
-  # Ignore incoming ICMP redirects (note: default is needed to ensure that the
-  # setting is applied to interfaces added after the sysctls are set)
-  boot.kernel.sysctl."net.ipv4.conf.all.accept_redirects" = lib.mkDefault false;
-  boot.kernel.sysctl."net.ipv4.conf.all.secure_redirects" = lib.mkDefault false;
-  boot.kernel.sysctl."net.ipv4.conf.default.accept_redirects" = lib.mkDefault false;
-  boot.kernel.sysctl."net.ipv4.conf.default.secure_redirects" = lib.mkDefault false;
-  boot.kernel.sysctl."net.ipv6.conf.all.accept_redirects" = lib.mkDefault false;
-  boot.kernel.sysctl."net.ipv6.conf.default.accept_redirects" = lib.mkDefault false;
-
-  # Ignore outgoing ICMP redirects (this is ipv4 only)
-  boot.kernel.sysctl."net.ipv4.conf.all.send_redirects" = lib.mkDefault false;
-  boot.kernel.sysctl."net.ipv4.conf.default.send_redirects" = lib.mkDefault false;
 
   boot.blacklistedKernelModules = [
     # Obscure network protocols

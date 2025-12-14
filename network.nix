@@ -7,8 +7,9 @@
     wifi.siit.tu.ac.th 10.10.100.1
   '';
   # https://wiki.nixos.org/wiki/Systemd/resolved
-  systemd.services.NetworkManager-wait-online.enable = false;
+  systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
   systemd.services."network-online.target".wantedBy = lib.mkForce [ ];
+  systemd.services.NetworkManager-wait-online.wantedBy = lib.mkForce [ ];
   services.resolved.enable = false;
   services.dnscrypt-proxy = {
     # https://github.com/DNSCrypt/dnscrypt-proxy/blob/master/dnscrypt-proxy/example-dnscrypt-proxy.toml
@@ -66,6 +67,16 @@
     };
   };
 
+  services.syncthing = {
+    enable = true;
+    user = "toonzzzrock";
+    dataDir = "/home/toonzzzrock/000-Syncthing";
+  };
+
+  services.openssh = {
+    enable = true;
+    settings.PasswordAuthentication = true;
+  };
   networking = {
     hostName = "ChaOS";
     useDHCP = lib.mkDefault true;
@@ -132,6 +143,9 @@
 
     firewall = {
       enable = true;
+      allowPing = false; # optional
+      allowedTCPPorts = [ 22 ];
+      allowedUDPPorts = [ ];
     };
     nftables.enable = true;
   };

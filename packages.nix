@@ -1,87 +1,128 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  inputs,
+  ...
+}:
 with pkgs;
 [
+  # security tools
+  amass
+  subfinder
+  whois
+  nmap
+  wireshark
+  sqlmap
+  nikto
+  burpsuite
+  exiftool
+
+  # Hyprland and related packages
+  xdg-desktop-portal
+  xdg-desktop-portal-gtk
+  inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland
+  hyprpolkitagent
+  inputs.hyprpaper.packages.${pkgs.stdenv.hostPlatform.system}.default
+
+  # image tools
+  imv
+  qimgv # Image Viewer
+  glib
+  mpv
+  gimp
+
+  # winboat
+  freerdp
+  winboat
+
+  # container tools
   lazydocker
 
+  # DB tools
   dbeaver-bin
-  zoom-us
+
+  # Media tools
+  obs-studio
+  vesktop
+
+  # 3D and game development
+  blender
   godot
-  brightnessctl
-  gimp
-  nix-search-cli
 
+  # Browsers and note taking
   brave
-  dig
   xfce.thunar
+  youtube-music
+  obsidian
 
+  # Development tools
   llvmPackages_21.llvm # core LLVM tools like opt, llc
   llvmPackages_21.clang # C/C++/Objective‑C compiler front end
   llvmPackages_21.lld # LLVM linker
   llvmPackages_21.lldb # debugger
-
-  youtube-music
   nixfmt
+  nodejs
+  rust-bin.stable.latest.default
+  gcc # provides `cc`
+  pkg-config # helps native deps find headers/libs
+  rust-analyzer
+  rustc
+  cargo
+  rustfmt
+  cmake
+  clippy
+  inputs.nil.packages.${pkgs.stdenv.hostPlatform.system}.nil
 
+  # Gaming tools
   protonup-ng
-  # hyprpaper
-  nbfc-linux
 
-  # vdpauinfo
-  # libva-utils
-  # nvidia-vaapi-driver
-
-  # rclone
-
+  # Command line tools
+  dig
   ncdu
-  nwg-displays
-  bluetuith
-  slurp
   xdg-utils
   gzip
   zip
   unzip
-  # xdg-desktop-portal-hyprland
-  # xdg-desktop-portal-gtk
-  qimgv # Image Viewer
-  hyprpolkitagent
-  cliphist # Clipboard manager using rofi menu
-  wl-clipboard
-  hyprpicker # Color Picker
-  hyprshot
-  playerctl
-  brightnessctl
-  kitty-themes
-
-  obs-studio
-
-  vial
-  qmk-udev-rules # the only relevant
-
-  obsidian
-  networkmanagerapplet
-  # pkgs.x86_64_v4.vesktop
-  vesktop
-
-  # discord-canary
-  #  vscode
-
   fastfetch
   eza # Beautiful ls Replacement
   killall # For Killing All Instances Of Programs
-  mpv # Incredible Video Player
-  pavucontrol # For Editing Audio Levels & Devices
   btop
-  yazi # TUI File Manager
-  nodejs
   fastfetch
   cava
-  # neovim
   ripgrep
   fzf
   zsh-powerlevel10k # ZSH Theme
   git
-  gh
+
+  # Utilities
+  yazi # TUI File Manager
+  pavucontrol # For Editing Audio Levels & Devices
+  nbfc-linux
+  bluetuith
+  slurp
+  playerctl
+  kitty-themes
+  networkmanagerapplet
+  (inputs.nvf.lib.neovimConfiguration {
+    pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+    modules = [
+      ./nvim.nix
+    ];
+  }).neovim
+  ## Monitor
+  nwg-displays
+  brightnessctl
+
+  ## Clipboard managers and screenshot tools
+  cliphist # Clipboard manager using rofi menu
+  wl-clipboard
+  hyprpicker # Color Picker
+  hyprshot
   grim
+  gh
   jq
+
+  # QMK
+  vial
+  qmk-udev-rules # the only relevant
 
 ]

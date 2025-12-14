@@ -16,10 +16,6 @@
     ];
     exportConfiguration = true;
   };
-  # services.getty = {
-  #   autologinUser = "toonzzzrock";
-  #   autologinOnce = true;
-  # };
 
   services.displayManager = {
     enable = true;
@@ -39,7 +35,6 @@
     pulse.enable = true;
     # If you want to use JACK applications, uncomment this
     jack.enable = false;
-
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
     wireplumber.enable = true;
@@ -84,16 +79,28 @@
       inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
     # portalPackage = pkgs.xdg-desktop-portal-hyprland;
   };
+
+  xdg.terminal-exec = {
+    enable = true;
+    settings = {
+      default = [ "kitty.desktop" ];
+    };
+  };
   xdg.portal = {
     enable = true;
-    # config.common.default = [ "*" ];
+    config.common.default = [
+      "hyprland"
+      "gtk"
+    ];
     extraPortals = [
       # pkgs.xdg-desktop-portal-hyprland
+      pkgs.xdg-desktop-portal-gtk
       inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland
-      # pkgs.xdg-desktop-portal-wlr
-      # pkgs.xdg-desktop-portal-gtk
     ];
-    xdgOpenUsePortal = true;
+    xdgOpenUsePortal = false;
+    config.hyprland = {
+      "org.freedesktop.impl.portal.ScreenCast" = "hyprland";
+    };
   };
 
 }

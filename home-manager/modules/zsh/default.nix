@@ -2,14 +2,9 @@
 {
 
   programs = {
-    direnv = {
+    atuin = {
       enable = true;
-      enableZshIntegration = true; # see note on other shells below
-      nix-direnv.enable = true;
-    };
-    pay-respects.enable = true;
-    television = {
-      enable = true;
+      daemon.enable = true;
       enableZshIntegration = true;
     };
   };
@@ -39,7 +34,7 @@
       rm = "rm -I";
       nix-re = "cd /etc/nixos && sudo nixos-rebuild switch --flake .#toonzzzrock";
       nix-up = "cd /etc/nixos && sudo nix flake update";
-      py-env = "mamba env create -p ./.env -f environment.yml";
+      py-env = "mamba env create -f environment.yml";
       cdn = "cd /etc/nixos";
       nix-clean = ''
         sudo rm -rf /tmp/* &&
@@ -52,7 +47,7 @@
 
       btop = "sudo btop";
 
-      sql-start = "sudo systemctl start mysql & sudo mysql -u root -p";
+      sql-start = "sudo systemctl start mysql & sudo mariadb -u root -p";
       sql-stop = "sudo systemctl stop mysql";
       sql-restart = "sudo systemctl restart mysql";
 
@@ -62,7 +57,6 @@
 
       du = "ncdu";
       gi = "nvidia-offload gimp";
-      tv-zsh = "television zsh-history";
 
       v = "nvim";
       se = "sudoedit";
@@ -104,7 +98,6 @@
       eval "$(mamba shell hook --shell zsh)"
       zvm_after_init_commands+=(eval "$(fzf --zsh)")
       eval "$(zoxide init zsh)"
-      eval "$(pay-respects zsh --alias)"
 
       # Enable Ctrl+Left/Right word movement in terminal
       bindkey "^[[1;5C" forward-word

@@ -10,11 +10,11 @@ elapsed=$((now - start))
 (( elapsed < 0 )) && elapsed=0
 (( elapsed > total )) && elapsed=$total
 
-weeks_total=$(( total / 2419200 ))
-weeks_passed=$(( elapsed / 2419200 ))
+weeks_total=$(( total / 14400 ))
+weeks_passed=$(( elapsed / 14400 ))
 weeks_left=$(( weeks_total - weeks_passed ))
 
-barlen=26
+barlen=24
 filled=$(( total == 0 ? 0 : elapsed * barlen / total ))
 (( filled < 0 )) && filled=0
 (( filled > barlen )) && filled=$((barlen))
@@ -31,4 +31,4 @@ percent=$(awk -v e="$elapsed" -v t="$total" 'BEGIN{ if(t==0)print "0.00"; else p
 magenta="\033[35m"
 reset="\033[0m"
 
-echo -e "${magenta}$filled_bar${reset}$empty_bar ${weeks_left}m left (${magenta}${percent}%${reset})"
+echo -e "${magenta}$filled_bar${reset}$empty_bar ${weeks_left}h left (${magenta}${percent}%${reset})"

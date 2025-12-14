@@ -10,21 +10,17 @@
 }:
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
-  systemd.services."sys-fs-pstore.mount".enable = false;
-  systemd.services."systemd-pstore".enable = false;
-  systemd.services."modprobe@efi_pstore".enable = false;
-  console = {
-    enable = false;
-  };
+
   boot = {
     consoleLogLevel = 3;
-    enableContainers = lib.mkForce false;
     tmp = {
-      useZram = true;
+      useTmpfs = true;
+      cleanOnBoot = true;
     };
 
     kernelModules = [
       "i915"
+      "kvm-intel"
     ];
 
     initrd = {
@@ -46,11 +42,14 @@
       efi.canTouchEfiVariables = true;
       timeout = 0;
     };
-    kernelPackages = pkgs.linuxPackages_cachyos-lto; # .cachyOverride { mArch = "GENERIC_V4"; };
-    # kernelPackages = pkgs.linuxPackages;
+    kernelPackages = pkgs.linuxPackages_latest;
 
     kernelParams = [
-      # "quiet"
+      "slab_nomerge"
+      "init_on_alloc=1"
+      "init_on_free=1"
+      "page_alloc.shuffle=1"
+
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
 
@@ -59,13 +58,11 @@
 
       "preempt=full"
 
-      "mitigations=off"
+      # "mitigations=off"
 
       "i915.enable_psr=0"
       "i915.enable_guc=3"
       "i915.lvds_downclock=1"
-
-      "acpi=rsdt"
 
       "nmi_watchdog=0"
       "nowatchdog"
@@ -77,10 +74,6 @@
       "intel_iommu=on"
       "iommu=pt"
       "threadirqs"
-
-      "nvidia.NVreg_PreserveVideoMemoryAllocations=0"
-      "NVreg_RegistryDwords=RmEnableAggressiveVblank=1"
-
       "random.trust_cpu=on"
       "rcutree.enable_rcu_lazy=1"
 
@@ -88,22 +81,21 @@
       "rootdelay=0"
 
       "usbcore.autosuspend=-1"
-      "nvme.noacpi=1"
-      "nvme_core.default_ps_max_latency_us=0"
-      "pcie_aspm=force"
-      "split_lock_detect=off"
+      "max_ptes_none=4096"
     ];
     kernel.sysctl = {
+      "vm.vfs_cache_pressure" = 50;
+      "kernel.nmi_watchdog" = 0;
+      "kernel.printk" = "3 3 3 3";
+      "kernel.kexec_load_disabled" = 1;
+      "fs.file-max" = 2097152;
+
       "kernel.split_lock_mitigate" = 0;
 
       # Congestion control (BBR is great on high BDP/long fat pipes; on LAN, cubic is fine)
       "net.ipv4.tcp_congestion_control" = "bbr";
 
       # Larger autotune buffers for high throughput links (don’t overdo on small RAM)
-      "net.core.rmem_max" = 536870912;
-      "net.core.wmem_max" = 536870912;
-      "net.ipv4.tcp_rmem" = "8192 262144 536870912";
-      "net.ipv4.tcp_wmem" = "4096 16384 536870912";
 
       # Recover from bad PMTUs
       "net.ipv4.tcp_mtu_probing" = 1;
@@ -114,17 +106,8 @@
       "net.ipv4.tcp_moderate_rcvbuf" = 1;
       "net.ipv4.tcp_fastopen" = 3;
       "net.core.default_qdisc" = "fq"; # or cake
-      "vfs_cache_pressure" = 1;
       "vm.laptop_mode" = 5;
-      "vm.dirty_writeback_centisecs" = 6000;
-      "vm.dirty_expire_centisecs" = 6000;
-      "vm.dirty_ratio" = 5;
-      "vm.dirty_background_ratio" = 2;
-      "vm.swappiness" = 100; # https://discourse.nixos.org/t/how-can-i-see-if-my-system-is-using-my-swap-partition/47803/14
 
-      "net.core.netdev_max_backlog" = 250000;
-      "net.core.rmem_default" = 8388608;
-      "net.core.wmem_default" = 8388608;
       "net.core.optmem_max" = 40960;
       "net.ipv4.tcp_synack_retries" = 5;
       "net.ipv4.ip_local_port_range" = "1024 65535";
@@ -162,9 +145,6 @@
       # restrict kernel logs to root only
       "kernel.dmesg_restrict" = 1;
 
-      # disables kexec as it can be used to livepatch the running kernel
-      "kernel.kexec_load_disabled" = 1;
-
       # disable the loading of kernel modules
       # this can be used to prevent runtime insertion of malicious modules
       # could break the system if enabled within sysctl.conf
@@ -184,6 +164,29 @@
       # prevent unprivileged attackers from loading vulnerable line disciplines with the TIOCSETD ioctl
       "dev.tty.ldisc_autoload" = 0;
 
+      # Disable ftrace debugging unless explicitly required
+      "kernel.ftrace_enabled" = lib.mkDefault false;
+
+      # Harden reverse-path filtering and martian logging
+      "net.ipv4.conf.all.log_martians" = lib.mkDefault true;
+      "net.ipv4.conf.all.rp_filter" = lib.mkDefault "1";
+      "net.ipv4.conf.default.log_martians" = lib.mkDefault true;
+      "net.ipv4.conf.default.rp_filter" = lib.mkDefault "1";
+
+      # Block ICMP redirects by default
+      "net.ipv4.conf.all.accept_redirects" = lib.mkDefault false;
+      "net.ipv4.conf.all.secure_redirects" = lib.mkDefault false;
+      "net.ipv4.conf.default.accept_redirects" = lib.mkDefault false;
+      "net.ipv4.conf.default.secure_redirects" = lib.mkDefault false;
+      "net.ipv6.conf.all.accept_redirects" = lib.mkDefault false;
+      "net.ipv6.conf.default.accept_redirects" = lib.mkDefault false;
+
+      # Refuse to emit ICMP redirects
+      "net.ipv4.conf.all.send_redirects" = lib.mkDefault false;
+      "net.ipv4.conf.default.send_redirects" = lib.mkDefault false;
+
+      "net.ipv4.conf.all.accept_source_route" = 0;
+      "net.ipv4.conf.default.accept_source_route" = 0;
       ########## File System ##########
 
       # disallow core dumping by SUID/SGID programs
@@ -208,7 +211,6 @@
       "fs.protected_regular" = 2;
 
       ########## Networking ##########
-
     };
 
     # https://github.com/positron-solutions/derpconfig/blob/master/examples/kernel-clang.nix
@@ -229,8 +231,8 @@
     scheduler = "scx_bpfland";
   };
   boot.initrd.systemd.settings.Manager = {
-    DefaultTimeoutStopSec = "5s";
-    DefaultTimeoutStartSec = "5s";
+    DefaultTimeoutStopSec = "15s";
+    DefaultTimeoutStartSec = "15s";
     DefaultLimitNOFILE = 4096;
     RebootWatchdogSec = "5s";
     RuntimeWatchdogSec = "5s";
@@ -241,13 +243,6 @@
     DefaultLimitNOFILE = 4096;
     RebootWatchdogSec = "5s";
     RuntimeWatchdogSec = "5s";
-  };
-
-  zramSwap = {
-    enable = true;
-    algorithm = "lz4";
-    priority = 100;
-    memoryPercent = 50;
   };
 
   fileSystems."/" = {
@@ -261,7 +256,6 @@
       "discard=async"
       "space_cache=v2"
       "commit=60"
-      "ssd"
     ];
   };
 

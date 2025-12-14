@@ -12,8 +12,8 @@
 
   services = {
     system76-scheduler = {
-      enable = true;
-      useStockConfig = true;
+      enable = false;
+      useStockConfig = false;
     };
     power-profiles-daemon.enable = lib.mkForce false; # Remains disabled as per original
 
@@ -74,11 +74,11 @@
 
         # Intel iGPU (prefer defaults on BAT for smoother bursts)
         INTEL_GPU_MIN_FREQ_ON_AC = 400;
-        INTEL_GPU_MIN_FREQ_ON_BAT = 400;
-        INTEL_GPU_MAX_FREQ_ON_AC = 1000;
+        INTEL_GPU_MIN_FREQ_ON_BAT = 200;
+        INTEL_GPU_MAX_FREQ_ON_AC = 1450;
         INTEL_GPU_MAX_FREQ_ON_BAT = 800;
-        INTEL_GPU_BOOST_FREQ_ON_AC = 1600;
-        INTEL_GPU_BOOST_FREQ_ON_BAT = 1000;
+        INTEL_GPU_BOOST_FREQ_ON_AC = 1450;
+        INTEL_GPU_BOOST_FREQ_ON_BAT = 800;
 
         ##### Audio #####
         SOUND_POWER_SAVE_ON_AC = 1;
