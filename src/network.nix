@@ -17,10 +17,6 @@
     settings = {
       Resolve = {
         DNSStubListener = "no";
-        fallbackDns = [
-          "1.1.1.1"
-          "9.9.9.9"
-        ];
       };
     };
   };
@@ -32,6 +28,7 @@
       listen_addresses = [
         "127.0.0.1:53"
       ];
+
       ignore_system_dns = true;
       ipv6_servers = false; # disable IPv6 if not needed
       doh_servers = false; # disable DoH servers
@@ -80,6 +77,10 @@
       server_names = [
         "odoh-cloudflare"
         "odoh-id-gmail"
+      ];
+      fallback_resolvers = [
+        "1.1.1.1:53"
+        "9.9.9.9:53"
       ];
     };
   };
