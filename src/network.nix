@@ -17,6 +17,10 @@
     settings = {
       Resolve = {
         DNSStubListener = "no";
+        fallbackDns = [
+          "1.1.1.1"
+          "9.9.9.9"
+        ];
       };
     };
   };
@@ -27,8 +31,6 @@
     settings = {
       listen_addresses = [
         "127.0.0.1:53"
-        "1.1.1.1:53"
-        "9.9.9.9:53"
       ];
       ignore_system_dns = true;
       ipv6_servers = false; # disable IPv6 if not needed

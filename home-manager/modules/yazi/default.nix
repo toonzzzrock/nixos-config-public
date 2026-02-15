@@ -21,4 +21,5 @@
     };
     initLua = ./init.lua;
   };
+  programs.yazi.shellWrapperName = "y";
 }
