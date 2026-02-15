@@ -8,8 +8,16 @@
   modulesPath,
   ...
 }:
+let
+  kernel_package = pkgs.linuxPackages_latest;
+in
 {
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
+  };
 
   boot = {
     consoleLogLevel = 3;
@@ -20,7 +28,6 @@
 
     kernelModules = [
       "i915"
-      "kvm-intel"
     ];
 
     initrd = {
@@ -35,14 +42,15 @@
       verbose = false;
     };
 
-    extraModulePackages = [ config.hardware.nvidia.package ];
     loader = {
       systemd-boot.enable = true;
       systemd-boot.consoleMode = "auto";
       efi.canTouchEfiVariables = true;
       timeout = 0;
     };
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = kernel_package;
+
+    extraModulePackages = [ config.hardware.nvidia.package ];
 
     kernelParams = [
       "slab_nomerge"
@@ -53,21 +61,20 @@
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
 
-      "cgroup_no_v1=all"
+      # "cgroup_no_v1=all"
       "systemd.unified_cgroup_hierarchy=yes"
 
       "preempt=full"
 
       # "mitigations=off"
 
-      "i915.enable_psr=0"
+      # "i915.enable_psr=0"
       "i915.enable_guc=3"
       "i915.lvds_downclock=1"
 
       "nmi_watchdog=0"
       "nowatchdog"
 
-      "libahci.ignore_sss=1"
       "video=efifb:auto"
 
       "systemd.gpt_auto=no"
@@ -77,11 +84,12 @@
       "random.trust_cpu=on"
       "rcutree.enable_rcu_lazy=1"
 
-      "ahci.mobile_lpm_policy=3"
       "rootdelay=0"
-
-      "usbcore.autosuspend=-1"
+      # "usbcore.autosuspend=-1"
       "max_ptes_none=4096"
+
+      "modprobe.blacklist=nova_core,nova_drm,nouveau,nvidiafb"
+      "nouveau.modeset=0"
     ];
     kernel.sysctl = {
       "vm.vfs_cache_pressure" = 50;
@@ -128,7 +136,7 @@
 
       # restrict access to kernel address
       # kernel pointers printed using %pK will be replaced with 0’s regardless of privileges
-      "kernel.kptr_restrict" = 2;
+      "kernel.kptr_restrict" = 0;
 
       # Ptrace protection using Yama
       #   - 0 (classic): allows any process to trace any other process under the same UID
@@ -223,26 +231,50 @@
         };
       }
     ];
+
+    extraModprobeConfig = ''
+      # Keep Bluetooth coexistence disabled for better BT audio stability
+      options iwlwifi bt_coex_active=0
+
+      # Enable software crypto (helps BT coexistence sometimes)
+      options iwlwifi swcrypto=1
+
+      # Disable power saving on Wi-Fi module to reduce radio state changes that might disrupt BT
+      options iwlwifi power_save=0
+
+      # Disable Unscheduled Automatic Power Save Delivery (U-APSD) to improve BT audio stability
+      options iwlwifi uapsd_disable=1
+
+      # Disable D0i3 power state to avoid problematic power transitions
+      options iwlwifi d0i3_disable=1
+
+      # Set power scheme for performance (iwlmvm)
+      options iwlmvm power_scheme=1
+    '';
+    blacklistedKernelModules = [
+      "nova_core"
+      "nova_drm"
+      "nouveau"
+      "nvidiafb"
+      "kvm"
+      "kvm_intel" # or kvm_amd
+    ];
   };
 
   services.scx = {
     enable = true;
     package = pkgs.scx.rustscheds;
-    scheduler = "scx_bpfland";
+    scheduler = "scx_lavd";
+    extraArgs = [ "--autopower" ];
+
   };
-  boot.initrd.systemd.settings.Manager = {
-    DefaultTimeoutStopSec = "15s";
-    DefaultTimeoutStartSec = "15s";
-    DefaultLimitNOFILE = 4096;
-    RebootWatchdogSec = "5s";
-    RuntimeWatchdogSec = "5s";
-  };
+
   systemd.settings.Manager = {
-    DefaultTimeoutStopSec = "5s";
-    DefaultTimeoutStartSec = "5s";
-    DefaultLimitNOFILE = 4096;
-    RebootWatchdogSec = "5s";
-    RuntimeWatchdogSec = "5s";
+    DefaultTimeoutStopSec = "3s";
+    DefaultTimeoutStartSec = "3s";
+    DefaultLimitNOFILE = 524288;
+    RebootWatchdogSec = "3s";
+    RuntimeWatchdogSec = "3s";
   };
 
   fileSystems."/" = {
@@ -269,14 +301,6 @@
   };
 
   swapDevices = [ ];
-
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-
-  # networking.interfaces.eth0.useDHCP = false;
-  # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
 
   # nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   # nix.settings.system-features = [

@@ -10,6 +10,6 @@ My curent NixOS configuration
 - TLP, system76-scheduler, nbfc
 - Permission Hardening
 - Unstable Branch
-- ZramSwap, Btrfs file system
+- Btrfs file system
 
-![system fastfetch](image.png)
+![system fastfetch](./images/fastfetch.png)

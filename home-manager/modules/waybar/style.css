@@ -76,7 +76,7 @@ window#waybar {
   /* Remove top and bottom padding */
 }
 
-#clock {
+#custom-clock {
   color: #ffd0d0;
   background: #2a2a2a;
   margin: 0 4px;

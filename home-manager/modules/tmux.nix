@@ -10,8 +10,32 @@
     extraConfig = ''
       set -as terminal-features ",alacritty*:RGB"
       bind -n M-r source-file ~/.config/tmux/tmux.conf \; display "Reloaded!"
+
+      # Disable auto-copy on mouse selection
+      unbind -T copy-mode-vi MouseDragEnd1Pane
+      unbind -T copy-mode MouseDragEnd1Pane
+
+      # Disable auto-copy on double-click
+      unbind -T copy-mode-vi DoubleClick1Pane
+      unbind -T copy-mode DoubleClick1Pane
+
+      # Manual copy with Ctrl+Shift+C (in copy mode and normal mode)
+      bind -T copy-mode-vi C-S-c send-keys -X copy-pipe-and-cancel "wl-copy"
+      bind -T copy-mode C-S-c send-keys -X copy-pipe-and-cancel "wl-copy"
+
+      # Disable auto-copy on Enter in vi copy mode, require explicit copy command
+      bind -T copy-mode-vi Enter send-keys -X clear-selection
+      bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "wl-copy"
       bind C-p previous-window
       bind C-n next-window
+      # kill pane
+      bind -n M-x kill-pane
+
+      # respawn pane
+      bind -n M-R respawn-pane
+
+      # new after current
+      bind -n M-Enter new-window -a
 
       bind -n M-1 select-window -t 1
       bind -n M-2 select-window -t 2

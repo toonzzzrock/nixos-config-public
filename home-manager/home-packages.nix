@@ -4,9 +4,10 @@
   ...
 }:
 let
-  ZenBrowser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.twilight.override {
+  system = pkgs.stdenv.hostPlatform.system;
+  ZenBrowser = inputs.zen-browser.packages.${system}.twilight.overrideAttrs (oldAttrs: {
     nativeMessagingHosts = [ pkgs.firefoxpwa ];
-  };
+  });
 in
 
 {
@@ -32,6 +33,10 @@ in
   };
 
   home.packages = with pkgs; [
+    # Programming Environments
+    devenv
+
+    # Browsers
     ZenBrowser
     (makeDesktopItem {
       name = "zen-twilight";

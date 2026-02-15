@@ -17,7 +17,7 @@
       background_blur = 30;
       background = "#0D0D18";
       cursor_trail = 3;
-      image_scaling = "nearest";
+      copy_on_select = false;
     };
 
     extraConfig = ''

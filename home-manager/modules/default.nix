@@ -1,18 +1,22 @@
 {
   imports = [
+    ./fastfetch
     ./hyprland
     ./rofi
     ./scripts
     ./waybar
     ./wlogout
-    ./zsh
     ./yazi
-    ./fastfetch
+    ./zsh
+
+    ./atuin.nix
     ./cava.nix
-    ./vscode.nix
+    ./ccache.nix
+    ./gamma-step.nix
     ./git.nix
     ./kitty.nix
     ./tmux.nix
+    ./vscode.nix
     ./zoxide.nix
     ./zathura.nix
   ];

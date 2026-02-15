@@ -11,6 +11,20 @@
     }
   '';
 
+  # hyprpaper requires `monitor` to be the first key inside `wallpaper {}`.
+  # The Home Manager `services.hyprpaper.settings` generator sorts keys, which
+  # can produce an invalid config on newer hyprpaper.
+  home.file.".config/hypr/hyprpaper.conf".text = ''
+    ipc = true
+    splash = false
+
+    wallpaper {
+      monitor =
+      path = /etc/nixos/wallpapers/yottea.png
+      fit_mode = cover
+    }
+  '';
+
   services.dunst = {
     enable = true;
     settings = {
@@ -69,14 +83,21 @@
       };
     };
   };
-  services.hyprpaper = {
-    enable = true;
-    package = inputs.hyprpaper.packages.${pkgs.stdenv.hostPlatform.system}.default;
-    settings = {
-      wallpaper = {
-        path = "/etc/nixos/wallpapers/yottea.png";
-        fit_mode = "cover";
-      };
+  systemd.user.services.hyprpaper = {
+    Unit = {
+      Description = "hyprpaper";
+      PartOf = [ "hyprland-session.target" ];
+      After = [ "hyprland-session.target" ];
+    };
+
+    Service = {
+      ExecStart = "${inputs.hyprpaper.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/hyprpaper";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+
+    Install = {
+      WantedBy = [ "hyprland-session.target" ];
     };
   };
   systemd.user.targets.hyprland-session.Unit.Wants = [ "xdg-desktop-autostart.target" ];
@@ -100,18 +121,17 @@
         "wl-paste --type text --watch cliphist store # Stores only text data"
         "wl-paste --type image --watch cliphist store # Stores only image data"
 
-        "dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
         "dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY"
 
-        "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
         "systemctl --user start hyprpolkitagent"
-        "killall -q hyprpaper;sleep .5 && hyprpaper"
         "nvidia-offload waybar"
         "pypr"
         "dunst"
-        "sudo rm -rf /home/toonzzzrock/.cache/cliphist"
-        "[workspace 1 silent] nvidia-offload zen"
-        "[workspace 2 silent] nvidia-offload code"
+        "[workspace 1 silent] kitty -e life-calendar"
+        "[workspace 2 silent] nvidia-offload zen"
+        "[workspace 3 silent] nvidia-offload code"
       ];
 
       input = {
@@ -148,7 +168,6 @@
       };
 
       general = {
-        "$modifier" = "SUPER";
         layout = "dwindle";
         gaps_in = 6;
         gaps_out = 5;
@@ -164,13 +183,13 @@
         mouse_move_enables_dpms = true;
         key_press_enables_dpms = true;
         disable_hyprland_logo = true;
-        disable_autoreload = false; # true to disable config reload on save
-        disable_splash_rendering = false;
+        disable_autoreload = true; # true to disable config reload on save
+        disable_splash_rendering = true;
         enable_swallow = false;
         vfr = true; # Variable Frame Rate
         vrr = 0; # Variable Refresh Rate  Might need to set to 0 for NVIDIA/AQ_DRM_DEVICES
         # Screen black momentarily or going black when app is fullscreen
-        # Try setting vrr to 0z
+        # Try setting vrr to 0
       };
       xwayland = {
         enabled = true;
@@ -192,8 +211,8 @@
         rounding = 10;
         blur = {
           enabled = true;
-          size = 9;
-          passes = 2;
+          size = 10;
+          passes = 1;
           ignore_opacity = true;
           new_optimizations = true;
           noise = 0.1;
@@ -203,10 +222,10 @@
           input_methods = true;
         };
         shadow = {
-          enabled = false;
-          # range = 4;
-          # render_power = 3;
-          # color = "rgba(1a1a1aee)";
+          enabled = true;
+          range = 4;
+          render_power = 3;
+          color = "rgba(1a1a1aee)";
         };
       };
 
@@ -224,10 +243,6 @@
         new_status = "master";
         new_on_top = 1;
         mfact = 0.5;
-      };
-
-      experimental = {
-        xx_color_management_v4 = true;
       };
 
       ecosystem = {

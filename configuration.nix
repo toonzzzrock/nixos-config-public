@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   inputs,
   ...
 }:
@@ -10,38 +9,40 @@
     cores = 4;
     substituters = [
       "https://hyprland.cachix.org"
-      "https://install.determinate.systems"
     ];
     trusted-substituters = [
       "https://hyprland.cachix.org"
-      "https://install.determinate.systems"
     ];
     trusted-public-keys = [
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
     ];
   };
 
   imports = [
     # Include the results of the hardware scan.
-    ./env.nix
-    ./db.nix
-    ./gpus.nix
-    ./hardening.nix
     ./hardware-configuration.nix
-    ./hypr.nix
-    ./life_archive.nix
-    ./nbfc.nix
-    ./network.nix
-    ./power.nix
-    ./programs.nix
-    ./services.nix
-    ./shell.nix
-    ./steam.nix
-    ./virt.nix
+
+    ./src/db.nix
+    ./src/env.nix
+    ./src/gpus.nix
+    ./src/hardening.nix
+    ./src/hypr.nix
+    ./src/nbfc.nix
+    ./src/network.nix
+    ./src/power.nix
+    ./src/programs.nix
+    ./src/services.nix
+    ./src/shell.nix
+    ./src/sound.nix
+    ./src/steam.nix
+    ./src/virt.nix
   ];
 
   programs.zsh.enable = true;
+  programs.wireshark = {
+    enable = true;
+    package = pkgs.wireshark;
+  };
   nix.settings.trusted-users = [
     "root"
     "toonzzzrock"
@@ -50,6 +51,7 @@
     groups = {
       toonzzzrock = { };
       plugdev = { };
+      wireshark = { };
     };
     users.toonzzzrock = {
       isNormalUser = true;
@@ -64,13 +66,36 @@
         "input"
         "docker"
         "plugdev"
-        "libvirtd"
-        "kvm"
+        "wireshark"
       ];
       shell = pkgs.zsh;
     };
   };
-  nixpkgs.overlays = [ inputs.rust-overlay.overlays.default ];
+
+  nixpkgs.overlays = [
+    inputs.rust-overlay.overlays.default
+    inputs.antigravity-nix.overlays.default
+    (final: prev: {
+      vesktop = prev.vesktop.overrideAttrs (old: {
+        preBuild = ''
+          cp -r ${prev.electron.dist} electron-dist
+          chmod -R u+w electron-dist
+        '';
+        buildPhase = ''
+          runHook preBuild
+
+          pnpm build
+          pnpm exec electron-builder \
+            --dir \
+            -c.asarUnpack="**/*.node" \
+            -c.electronDist="electron-dist" \
+            -c.electronVersion=${prev.electron.version}
+
+          runHook postBuild
+        '';
+      });
+    })
+  ];
 
   nix.settings.experimental-features = [
     "nix-command"
@@ -99,7 +124,7 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowUnsupportedSystem = true;
   # List packages installed in system profile. To search, run:
-  environment.systemPackages = import ./packages.nix { inherit pkgs inputs; };
+  environment.systemPackages = import ./src/packages.nix { inherit pkgs inputs; };
 
   fonts = {
     fontDir.enable = true;

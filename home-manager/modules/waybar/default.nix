@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   lib,
   ...
@@ -31,7 +30,7 @@
           "hyprland/workspaces"
         ];
         modules-right = [
-          "clock"
+          "custom/clock"
           "pulseaudio"
           "custom/power-profiles"
           "custom/fan-speed" # added fan-speed module
@@ -57,31 +56,46 @@
           interval = 10;
         };
 
-        clock = {
-          format = "󰥔 {:%a, %d %b, %I:%M %p}";
-          tooltip = "true";
-          tooltip-format = ''
-            <big>{:%Y %B}</big>
-            <tt><small>{calendar}</small></tt>'';
-          format-alt = "󰥔 {:%d/%m}";
-          interval = 45;
+        "custom/clock" = {
+          format = "󰥔 {text}";
+          format-alt = "󰥔 {alt}";
+          return-type = "json";
+          exec = "${pkgs.writeShellScriptBin "waybar_clock" ''
+            target_epoch="$(date -d '2084-10-19 00:00:00' +%s)"
+            now_epoch="$(date +%s)"
+
+            if [ "${"$"}now_epoch" -ge "${"$"}target_epoch" ]; then
+              countdown="0mo 0d 0h 0m"
+            else
+              remaining=$((target_epoch - now_epoch))
+              days=$((remaining / 86400))
+              hours=$(((remaining % 86400) / 3600))
+              mins=$(((remaining % 3600) / 60))
+              secs=$((remaining % 60))
+              countdown="${"$"}days""d ""${"$"}hours""h ""${"$"}mins""m ""${"$"}secs""s"
+            fi
+
+            now_text="$(date '+%a, %d %b, %I:%M %p')"
+            printf '{"text":"%s", "alt":"%s", "tooltip":"Click clock to toggle"}\n' "${"$"}now_text" "${"$"}countdown"
+          ''}/bin/waybar_clock";
+          interval = 1;
         };
 
         "cava#left" = {
-          framerate = 30;
+          framerate = 20;
           autosens = 1;
           bars = 10;
           lower_cutoff_freq = 1;
-          higher_cutoff_freq = 10000;
-          interval = 20;
-          method = "pipewire";
-          source = "auto";
+          higher_cutoff_freq = 5000;
+          interval = 2;
+          method = "pulse";
+          source = "alsa_output.pci-0000_00_1f.3.analog-stereo.monitor"; # from pactl
           stereo = true;
           reverse = false;
           bar_delimiter = 0;
           monstercat = false;
           waves = false;
-          input_delay = 3;
+          input_delay = 1;
           hide_on_silence = true; # Hide when no audio is playing
           format-icons = [
             "<span foreground='#ffd0d0'> </span>"
@@ -94,74 +108,6 @@
             "<span foreground='#ffd0d0'>█</span>"
           ];
         };
-
-        # "cava#right" = {
-        #   framerate = 60;
-        #   autosens = 1;
-        #   bars = 5;
-        #   lower_cutoff_freq = 50;
-        #   higher_cutoff_freq = 10000;
-        #   method = "pipewire";
-        #   source = "auto";
-        #   stereo = true;
-        #   reverse = false;
-        #   bar_delimiter = 0;
-        #   monstercat = false;
-        #   waves = false;
-        #   input_delay = 2;
-        #   format-icons = [
-        #     "<span foreground='#cba6f7'>▁</span>"
-        #     "<span foreground='#cba6f7'>▂</span>"
-        #     "<span foreground='#cba6f7'>▃</span>"
-        #     "<span foreground='#cba6f7'>▄</span>"
-        #     "<span foreground='#89b4fa'>▅</span>"
-        #     "<span foreground='#89b4fa'>▆</span>"
-        #     "<span foreground='#89b4fa'>▇</span>"
-        #     "<span foreground='#89b4fa'>█</span>"
-        #   ];
-        # };
-
-        # "custom/playerctl#backward" = {
-        #   format = "󰙣  ";
-        #   on-click = "playerctl previous";
-        #   on-scroll-up = "playerctl volume .05+";
-        #   on-scroll-down = "playerctl volume .05-";
-        # };
-
-        # "custom/playerctl#play" = {
-        #   format = "{icon}";
-        #   return-type = "json";
-        #   exec = "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F";
-        #   on-click = "playerctl play-pause";
-        #   on-scroll-up = "playerctl volume .05+";
-        #   on-scroll-down = "playerctl volume .05-";
-        #   format-icons = {
-        #     Playing = "<span>󰏥 </span>"; # nf-md-play
-        #     Paused = "<span>󰏤 </span>";  # nf-md-pause
-        #     Stopped = "<span>󰓛 </span>"; # nf-md-stop
-        #   };
-        # };
-
-        # "custom/playerctl#foward" = {
-        #   format = "󰙡  ";
-        #   on-click = "playerctl next";
-        #   on-scroll-up = "playerctl volume .05+";
-        #   on-scroll-down = "playerctl volume .05-";
-        # };
-
-        # "custom/playerlabel" = {
-        #   format = "    {icon}  <span>{}</span>";
-        #   "return-type" = "json";
-        #   "max-length" = 30;
-        #   exec = "playerctl -a metadata --format '{\"text\": \"{{markup_escape(title)}}\", \"tooltip\": \"{{playerName}} : {{markup_escape(title)}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F";
-        #   "on-click-middle" = "playerctl play-pause";
-        #   "on-click" = "playerctl previous";
-        #   "on-click-right" = "playerctl next";
-        #   "format-icons" = {
-        #     Playing = "<span foreground='#98BB6C'></span>";
-        #     Paused = "<span foreground='#E46876'></span>";
-        #   };
-        # };
 
         battery = {
           states = {
@@ -183,7 +129,7 @@
           on-click = "${pkgs.writeShellScript "battery-menu" ''
             ${pkgs.wlogout}/bin/wlogout -p layer-shell
           ''}";
-          interval = 60;
+          interval = 10;
         };
 
         # network = {
@@ -216,7 +162,7 @@
             ];
           };
           scroll-step = 5;
-          interval = 10;
+          interval = 2;
         };
 
         tray = {
@@ -227,18 +173,18 @@
         # add new power‐profiles module
         "custom/power-profiles" = {
           exec = "${pkgs.writeShellScriptBin "powermode" ''
-            if tlp-stat -m | grep -q "battery"; then
+            if tlp-stat -m | grep -q "BAT"; then
               echo '𝗓ᶻ'
             else
               echo 'ϟ'
             fi
           ''}/bin/powermode";
-          interval = 15;
+          interval = 2;
           format = "{text}"; # Use only the {text} placeholder
           tooltip = true;
           tooltip-format = "Power profile: {}"; # Tooltip remains unchanged
           on-click = "${pkgs.writeShellScriptBin "powermode_set" ''
-            if tlp-stat -m | grep -q "battery"; then
+            if tlp-stat -m | grep -q "BAT"; then
                sudo tlp ac
             else
                sudo tlp bat
@@ -281,7 +227,7 @@
               printf "☢ %.0f%%\n" "$readout"
             fi
           ''}/bin/fanmode_status";
-          interval = 15;
+          interval = 30;
           format = "{text}";
           tooltip = true;
           tooltip-format = "Fan speed: scroll ±10%, click=auto";

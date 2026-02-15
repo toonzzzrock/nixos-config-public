@@ -33,7 +33,19 @@
     };
     nil.url = "github:oxalica/nil";
     preload-ng.url = "github:miguel-b-p/preload-ng";
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+    antigravity-nix = {
+      url = "github:jacopone/antigravity-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    direnv-instant.url = "github:Mic92/direnv-instant";
+
+    life-calendar = {
+      url = "github:toonzzzrock/life-calendar";
+      inputs = {
+        nixpkgs.follows = "hyprland/nixpkgs";
+        systems.follows = "hyprland/systems";
+      };
+    };
   };
   outputs =
     { self, ... }@inputs:
@@ -46,22 +58,31 @@
           ./configuration.nix
           inputs.home-manager.nixosModules.home-manager
           inputs.preload-ng.nixosModules.default
-          inputs.determinate.nixosModules.default
-
+          inputs.life-calendar.nixosModules.default
           (
             { pkgs, config, ... }:
             {
+              programs.life-calendar = {
+                enable = true;
+                birthDate = "2004-10-19";
+                deathDate = "2084-10-19";
+                editor = "code";
+                diaryDir = "~/.life-calendar/diary";
+                diaryTemplate = "~/.life-calendar/template.md";
+              };
+
               home-manager = {
                 useGlobalPkgs = true;
                 backupFileExtension = "HMBackup";
                 useUserPackages = true;
                 users.toonzzzrock = {
                   imports = [
-                    ./home.nix
+                    ./home-manager/home.nix
+                    inputs.direnv-instant.homeModules.direnv-instant
                   ];
                 };
                 extraSpecialArgs = {
-                  inherit inputs; # Pass the flake's top-level 'inputs' directly
+                  inherit inputs;
                 };
               };
             }

@@ -3,65 +3,83 @@
     font-size: 20px;
 }
 
+/* =========================
+   WINDOW (fake transparency)
+   ========================= */
 window {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.9)), url("/etc/nixos/wallpapers/4.png");
-    background-color: transparent;
+    background-image:
+        url("/etc/nixos/wallpapers/yottea_low.png");
+
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    opacity: 0.92;
+    /* prefer RGBA background over whole-window opacity (less compositor work) */
+    background-color: rgba(0, 0, 0, 0.12);
+    opacity: 1;
 }
 
+/* =========================
+   GLASS BUTTONS (CLEAN)
+   ========================= */
 button {
-    color: transparent;
-    /* red text color */
-    background-color: rgba(0, 0, 0, 0.5);
-    /* transparent button background */
-    outline-style: none;
-    border: none;
-    border-width: 0px;
+    /* darker, more solid glass */
+    background-color: rgba(8, 8, 8, 0.8);
+    background-image: none;
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 30%;
-    /* Increased size when not hovered */
-    border-radius: 15px;
-    box-shadow: none;
-    text-shadow: none;
-    animation: gradient_f 20s ease-in infinite;
-}
+    background-size: 32%;
 
-button:focus {
-    background-color: rgba(0, 0, 0, 0.5);
-    /* slightly darker transparent background */
-    background-size: 35%;
+    box-shadow:
+        0 10px 26px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    transition: background-color 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease,
+        background-size 0.18s ease;
 }
 
 button:hover {
-    background-color: rgba(0, 0, 0, 0.5);
-    /* slightly darker transparent background */
-    background-size: 40%;
-    border-radius: 15px;
-    animation: gradient_f 20s ease-in infinite;
-    transition: all 0.3s cubic-bezier(.55, 0.0, .28, 1.682);
+    background-color: rgba(20, 20, 20, 0.75);
+    border-color: rgba(255, 255, 255, 0.26);
+
+    background-size: 38%;
+
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
+button:focus {
+    background-color: rgba(8, 8, 8, 0.75);
+    border-color: rgba(255, 255, 255, 0.30);
+}
+
+button:active {
+    background-color: rgba(10, 10, 10, 0.85);
+    box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.55),
+        inset 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+/* =========================
+   ICONS
+   ========================= */
 #shutdown {
     background-image: url("/etc/nixos/home-manager/modules/wlogout/shutdown_white.png");
-    border-radius: 10px;
     margin: 10px 20px;
-    /* Larger left and right margins */
 }
 
 #reboot {
     background-image: url("/etc/nixos/home-manager/modules/wlogout/reboot_white.png");
-    border-radius: 10px;
     margin: 10px 20px;
-    /* Larger left and right margins */
 }
 
 #hibernate {
     background-image: url("/etc/nixos/home-manager/modules/wlogout/hibernate_white.png");
-    border-radius: 10px;
     margin: 10px 20px;
-    /* Larger left and right margins */
 }

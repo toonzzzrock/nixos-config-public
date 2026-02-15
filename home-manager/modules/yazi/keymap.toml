@@ -1,0 +1,123 @@
+[[mgr.prepend_keymap]]
+on = [ "P", "s" ]
+run = "plugin projects save"
+desc = "Save current project"
+
+[[mgr.prepend_keymap]]
+on = [ "P", "l" ]
+run = "plugin projects load"
+desc = "Load project"
+
+[[mgr.prepend_keymap]]
+on = [ "P", "P" ]
+run = "plugin projects load_last"
+desc = "Load last project"
+
+[[mgr.prepend_keymap]]
+on = [ "P", "d" ]
+run = "plugin projects delete"
+desc = "Delete project"
+
+[[mgr.prepend_keymap]]
+on = [ "P", "D" ]
+run = "plugin projects delete_all"
+desc = "Delete all projects"
+
+[[mgr.prepend_keymap]]
+on = [ "P", "m" ]
+run = "plugin projects 'merge current'"
+desc = "Merge current tab to other projects"
+
+[[mgr.prepend_keymap]]
+on = [ "P", "M" ]
+run = "plugin projects 'merge all'"
+desc = "Merge current project to other projects"
+
+[[mgr.prepend_keymap]]
+on = [ "Q" ]
+run = "plugin projects quit"
+desc = "Save last project and exit the process"
+
+[[mgr.prepend_keymap]]
+on   = [ "g", "i" ]
+run  = "plugin lazygit"
+desc = "run lazygit"
+
+[[mgr.prepend_keymap]]
+on   = [ "c", "m" ]
+run  = "plugin chmod"
+desc = "Chmod on selected files"
+
+[[plugin.prepend_fetchers]]
+id   = "git"
+name = "*"
+run  = "git"
+
+[[plugin.prepend_fetchers]]
+id   = "git"
+name = "*/"
+run  = "git"
+
+# sudo cp/mv
+[[mgr.prepend_keymap]]
+on = ["R", "p", "p"]
+run = "plugin sudo -- paste"
+desc = "sudo paste"
+
+# sudo cp/mv --force
+[[mgr.prepend_keymap]]
+on = ["R", "P"]
+run = "plugin sudo -- paste --force"
+desc = "sudo paste"
+
+# sudo mv
+[[mgr.prepend_keymap]]
+on = ["R", "r"]
+run = "plugin sudo -- rename"
+desc = "sudo rename"
+
+# sudo ln -s (absolute-path)
+[[mgr.prepend_keymap]]
+on = ["R", "p", "l"]
+run = "plugin sudo -- link"
+desc = "sudo link"
+
+# sudo ln -s (relative-path)
+[[mgr.prepend_keymap]]
+on = ["R", "p", "r"]
+run = "plugin sudo -- link --relative"
+desc = "sudo link relative path"
+
+# sudo ln
+[[mgr.prepend_keymap]]
+on = ["R", "p", "L"]
+run = "plugin sudo -- hardlink"
+desc = "sudo hardlink"
+
+# sudo touch/mkdir
+[[mgr.prepend_keymap]]
+on = ["R", "a"]
+run = "plugin sudo -- create"
+desc = "sudo create"
+
+# sudo trash
+[[mgr.prepend_keymap]]
+on = ["R", "d"]
+run = "plugin sudo -- remove"
+desc = "sudo trash"
+
+# sudo delete
+[[mgr.prepend_keymap]]
+on = ["R", "D"]
+run = "plugin sudo -- remove --permanently"
+desc = "sudo delete"
+
+# sudo chmod
+[[mgr.prepend_keymap]]
+on = ["R", "m"]
+run = "plugin sudo -- chmod"
+desc = "sudo chmod"
+
+[[mgr.prepend_keymap]]
+on = "<C-y>"
+run = ["plugin wl-clipboard"]

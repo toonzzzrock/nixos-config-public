@@ -1,28 +1,23 @@
 {
   wayland.windowManager.hyprland = {
     settings = {
-      # According to the Hyprland Wiki, updated syntax uses 'match:' properties
-      # and supports tagging for grouping rules.
-      windowrulev2 = [
-        "keepaspectratio, title:^(Picture-in-Picture)$"
-      ];
       windowrule = [
         # --- Tags (Defining Rules) ---
         "tag +file-manager, match:class ^([y]azi|Thunar|[Bb]top)$"
-        "tag +projects, match:class ^(VSCode|code-url-handler|[Cc]ode|[Oo]bsidian|[Cc]odium)$"
+        "tag +projects, match:class ^(VSCode|code-url-handler|[Cc]ode|[Oo]bsidian|[Cc]odium|[Aa]ntigravity)$"
         "tag +browser, match:class ^(\\.zen-beta-wrapp|\\.zen-twilight-w|zen-twilight|zen)$"
         "tag +im, match:class ^([Dd]iscord|[Ww]ebCord|[Vv]esktop|[Dd]iscord[Cc]anary)$"
         "tag +music, match:class ^(Spotify|[Mm]elody|com\\.github\\.th_ch\\.youtube_music)$"
         "tag +obs, match:class ^([Oo]bsidian)$"
+        "tag +pip, match:title ^(?:[Pp]icture(?:-| )in(?:-| )[Pp]icture)$"
 
         # --- Layout & Position Rules ---
         "center on, match:class ^(pavucontrol|org.pulseaudio.pavucontrol|com.saivert.pwvucontrol)$"
         "center on, match:title ^(Authentication Required)$"
         "float on, match:title ^(Authentication Required)$"
-        "tile on, match:class (codium|codium-url-handler|VSCodium), match:title negative:(.*codium.*|.*VSCodium.*)"
 
         # --- Window State Rules ---
-        "pin on, match:class ^([Dd]iscord|[Ww]ebCord|[Vv]esktop|[Dd]iscord[Cc]anary)$"
+        "pin on, match:tag im*"
 
         # --- Size Rules ---
         "size 70% 60%, match:initial_title (Open Files)"
@@ -45,8 +40,7 @@
         "tag +tui, match:class ^kitty$, match:initial_title ^kitty$, match:initial_class ^kitty$"
         "float on, match:tag tui*"
         "center on, match:tag tui*"
-        "size 1000 800, match:tag tui*"
-        "opacity 0.8 0.8 0.8, match:tag tui*"
+        "opacity 0.7 0.7 0.8, match:tag tui*"
 
         # --- Workspaces ---
         "workspace special silent, match:tag obs*"
@@ -55,13 +49,15 @@
         "float on, match:tag terminal*"
         "center on, match:tag terminal*"
 
-        "pin on, match:title ^(Picture-in-Picture)$"
-        "float on, match:title ^(Picture-in-Picture)$"
-        "move 1300 700, match:title ^(Picture-in-Picture)$"
-        "size 240 135, match:title ^(Picture-in-Picture)$"
+        "keep_aspect_ratio on, match:tag pip*"
 
+        # Accept either "Picture in Picture" or "Picture-in-Picture"
+        "pin on, match:tag pip*"
+        "float on, match:tag pip*"
+        "move 1300 700, match:tag pip*"
+        "size 240 135, match:tag pip*"
+        "size 1500 800, match:tag tui*"
       ];
     };
-
   };
 }
